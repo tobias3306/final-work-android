@@ -15,7 +15,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Toolbar;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -33,13 +32,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private GoogleMap gmap;
     private static final String MAP_VIEW_BUNDLE_KEY = "MapViewBundleKey";
     private Location location;
-    private ATM[] ATMArray;
+    private List<ATM_DB2> ATMArray;
     private boolean mapReady = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        SugarContext.init(this);
 
         android.support.v7.widget.Toolbar myToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
@@ -64,15 +65,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapView.onCreate(mapViewBundle);
         mapView.getMapAsync(this);
 
-        HttpURLConnectionAPI call = new HttpURLConnectionAPI();
-
-        try {
-            ATMArray = call.sendGet();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-
+        ATMArray = ATM_DB2.listAll(ATM_DB2.class);
     }
 
     @Override
@@ -116,8 +109,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         gmap.moveCamera(CameraUpdateFactory.newLatLng(myLoc));
         mapReady = true;
-        addToMap();
-
+        if(ATM_DB2.count(ATM_DB2.class) > 0){
+            addToMap();
+        }
+        SugarContext.terminate();
     }
 
     @Override
@@ -200,10 +195,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     };
 
     public void addToMap(){
-        for(int i =0; i < ATMArray.length;i++){
-            double latitude = ATMArray[i].getCoord()[0];
-            double longitude = ATMArray[i].getCoord()[1];
-            String name = ATMArray[i].getAgen();
+        for(int i =0; i < ATMArray.size();i++){
+            double latitude = ATMArray.get(i).getLatitude();
+            double longitude = ATMArray.get(i).getLongitude();
+            Log.d(Double.toString(latitude),Double.toString(longitude));
+            String name = ATMArray.get(i).getAgen();
             gmap.addMarker(new MarkerOptions().position(new LatLng(latitude,longitude)).title(name));
         }
     }

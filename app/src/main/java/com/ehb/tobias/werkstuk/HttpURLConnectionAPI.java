@@ -21,7 +21,7 @@ public class HttpURLConnectionAPI {
             @Override
             public void run() {
                 try  {
-                    String url = "http://192.168.0.110/atmwebservice.php";
+                    String url = "http://192.168.0.127/atmwebservice.php";
 
                     URL obj = new URL(url);
                     HttpURLConnection con = (HttpURLConnection) obj.openConnection();
@@ -54,9 +54,11 @@ public class HttpURLConnectionAPI {
         thread.start();
 
         while(done == false){
-
+            Thread.sleep(10);
         }
         done = false;
+
+        thread.interrupt();
 
         return ATMArray;
     }

@@ -1,5 +1,7 @@
 package com.ehb.tobias.werkstuk;
 
+import com.orm.SugarRecord;
+
 /**
  * Created by Tobias on 7/01/2018.
  */

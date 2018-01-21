@@ -11,11 +11,11 @@ import android.view.View;
 import android.widget.Button;
 
 import com.orm.SugarContext;
-import com.orm.SugarRecord;
 
 public class SettingsActivity extends AppCompatActivity {
 
     private ATM[] ATMArray;
+    private HttpURLConnectionAPI call = new HttpURLConnectionAPI();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,36 +24,35 @@ public class SettingsActivity extends AppCompatActivity {
         android.support.v7.widget.Toolbar myToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
 
-        SugarContext.init(this);
-    }
+
+
 
         final Button button = findViewById(R.id.syncButton);
-        /*button.setOnClickListener(new View.OnClickListener() {
+        button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                ATM_DB.deleteAll(ATM_DB.class);
-                HttpURLConnectionAPI call = new HttpURLConnectionAPI();
+                initDB();
+                ATM_DB2.deleteAll(ATM_DB2.class);
                 try {
                     ATMArray = call.sendGet();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
                 for (int i = 0; i < ATMArray.length; i++) {
-                    ATM_DB newATM = new ATM_DB();
-                    newATM.setAdress(ATMArray[i].getFields().getAdress());
-                    newATM.setAdresse(ATMArray[i].getFields().getAdresse());
-                    newATM.setAgen(ATMArray[i].getFields().getAgen());
-                    newATM.setLatitude(ATMArray[i].getFields().getCoord_wgs84()[0]);
-                    newATM.setLongitude(ATMArray[i].getFields().getCoord_wgs84()[1]);
-                    newATM.setDatasetid(ATMArray[i].getDatasetid());
-                    newATM.setQuoi(ATMArray[i].getFields().getQuoi());
-                    newATM.setRecordid(ATMArray[i].getRecordid());
-                    newATM.setRecord_timestamp(ATMArray[i].getRecord_timestamp());
-                    newATM.setWat(ATMArray[i].getFields().getWat());
-                    newATM.setWhat(ATMArray[i].getFields().getWhat());
+                    ATM_DB2 newATM = new ATM_DB2();
+                    newATM.setLatitude(ATMArray[i].getCoord()[0]);
+                    newATM.setLongitude(ATMArray[i].getCoord()[1]);
+                    newATM.setWhat(ATMArray[i].getWhat());
+                    newATM.setWat(ATMArray[i].getWat());
+                    newATM.setQuoi(ATMArray[i].getQuoi());
+                    newATM.setAgen(ATMArray[i].getAgen());
+                    newATM.setAdresse(ATMArray[i].getAdresse());
+                    newATM.setAdress(ATMArray[i].getAdress());
                     newATM.save();
                 }
+                SugarContext.terminate();
             }
-        });*/
+        });
+    }
         @Override
         public boolean onCreateOptionsMenu (Menu menu){
             MenuInflater findMenuItems = getMenuInflater();
@@ -74,5 +73,8 @@ public class SettingsActivity extends AppCompatActivity {
                     return super.onOptionsItemSelected(item);
 
             }
+        }
+        public void initDB(){
+            SugarContext.init(this);
         }
     }
